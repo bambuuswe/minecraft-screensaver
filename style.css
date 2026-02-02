@@ -1,0 +1,162 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'VT323', monospace;
+  background: #1a1a2e;
+  color: #fff;
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  position: relative;
+}
+
+/* Bakgrund med stjärnor */
+.stars {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(2px 2px at 20px 30px, #eee, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 40px 70px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 50px 160px, #ddd, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 90px 40px, #fff, rgba(0,0,0,0)),
+    radial-gradient(2px 2px at 130px 80px, #fff, rgba(0,0,0,0));
+  background-repeat: repeat;
+  background-size: 200px 200px;
+  animation: twinkle 5s infinite;
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+/* Klock-container */
+.clock-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  z-index: 10;
+  text-shadow: 4px 4px 0 #000;
+}
+
+.date {
+  font-size: 8vw;
+  color: #5d8c3a;
+  margin-bottom: 20px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+}
+
+.time {
+  font-size: 20vw;
+  color: #fff;
+  line-height: 1;
+  font-weight: bold;
+  letter-spacing: 10px;
+}
+
+.seconds {
+  font-size: 10vw;
+  color: #ffeb3b;
+  margin-top: 10px;
+}
+
+.weather {
+  font-size: 6vw;
+  margin-top: 30px;
+  color: #87ceeb;
+}
+
+.greeting {
+  font-size: 5vw;
+  margin-top: 40px;
+  color: #c8e6c9;
+  animation: pulse 3s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* Flygande block (screensaver för att undvika burn-in) */
+.floating-blocks {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.block {
+  position: absolute;
+  font-size: 40px;
+  opacity: 0.3;
+  animation: float 20s infinite linear;
+}
+
+.block.grass {
+  top: 10%;
+  left: -10%;
+  animation-duration: 25s;
+  animation-delay: 0s;
+}
+
+.block.dirt {
+  top: 70%;
+  left: -10%;
+  animation-duration: 30s;
+  animation-delay: 5s;
+}
+
+.block.stone {
+  top: 30%;
+  left: -10%;
+  animation-duration: 22s;
+  animation-delay: 10s;
+}
+
+.block.diamond {
+  top: 60%;
+  left: -10%;
+  animation-duration: 18s;
+  animation-delay: 15s;
+}
+
+@keyframes float {
+  0% { transform: translateX(0) translateY(0) rotate(0deg); }
+  25% { transform: translateX(25vw) translateY(-20px) rotate(90deg); }
+  50% { transform: translateX(50vw) translateY(20px) rotate(180deg); }
+  75% { transform: translateX(75vw) translateY(-10px) rotate(270deg); }
+  100% { transform: translateX(110vw) translateY(0) rotate(360deg); }
+}
+
+/* Förhindra burn-in: Subtil rörelse av hela containern */
+.clock-container {
+  animation: drift 60s infinite ease-in-out;
+}
+
+@keyframes drift {
+  0%, 100% { transform: translate(-50%, -50%) translate(0, 0); }
+  25% { transform: translate(-50%, -50%) translate(20px, -20px); }
+  50% { transform: translate(-50%, -50%) translate(-10px, 10px); }
+  75% { transform: translate(-50%, -50%) translate(15px, 15px); }
+}
+
+/* Landskapsläge på mobil */
+@media (orientation: landscape) {
+  .time { font-size: 15vw; }
+  .date { font-size: 5vw; }
+  .seconds { font-size: 7vw; }
+}
