@@ -36,7 +36,8 @@
         radial-gradient(2px 2px at 40px 70px, #ffffff, transparent),
         radial-gradient(2px 2px at 50px 160px, #ffffff, transparent),
         radial-gradient(2px 2px at 90px 40px, #ffffff, transparent),
-        radial-gradient(2px 2px at 130px 80px, #ffffff, transparent);
+        radial-gradient(2px 2px at 130px 80px, #ffffff, transparent),
+        radial-gradient(2px 2px at 160px 120px, #ffffff, transparent);
       background-repeat: repeat;
       background-size: 200px 200px;
       animation: twinkle 3s infinite;
@@ -47,7 +48,7 @@
       50% { opacity: 1; }
     }
 
-    /* KLOCKA */
+    /* Huvudcontainer - ALLTID SYNLIG */
     .clock-container {
       position: absolute;
       top: 50%;
@@ -113,52 +114,6 @@
       50% { opacity: 1; }
     }
 
-    /* KNAPPAR - höger sida */
-    .side-buttons {
-      position: fixed;
-      right: 20px;
-      top: 50%;
-      transform: translateY(-50%);
-      z-index: 1000;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-
-    .mc-btn {
-      width: 60px;
-      height: 60px;
-      background: #5d8c3a;
-      border: 4px solid #3d5c26;
-      border-bottom: 4px solid #2d5016;
-      box-shadow: 0 6px 0 #1a1a1a;
-      font-size: 28px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: all 0.1s;
-      text-decoration: none;
-      color: white;
-      border-radius: 8px;
-    }
-
-    .mc-btn:active {
-      transform: translateY(6px);
-      box-shadow: 0 0 0 #1a1a1a;
-      border-bottom: 4px solid #3d5c26;
-    }
-
-    .mc-btn.map-btn {
-      background: #8b6914;
-      border-color: #5c4a0d;
-      border-bottom-color: #3d2f08;
-    }
-
-    .mc-btn.map-btn:active {
-      background: #6b4a0d;
-    }
-
     /* Flygande block */
     .floating-blocks {
       position: fixed;
@@ -209,23 +164,17 @@
       from { transform: translateX(-100px) rotate(0deg); }
       to { transform: translateX(calc(100vw + 100px)) rotate(-360deg); }
     }
+
+    /* Fallback om JS inte funkar */
+    .no-js {
+      color: #ff4444;
+      font-size: 5vw;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
   <div class="stars"></div>
-  
-  <!-- SIDOKNAPPAR -->
-  <div class="side-buttons">
-    <!-- KART-KNAPP - öppnar Apple Shortcut -->
-    <a href="shortcuts://run-shortcut?name=McMap" class="mc-btn map-btn" title="Öppna karta">
-      🗺️
-    </a>
-    
-    <!-- Inställnings-knapp (valfritt) -->
-    <button class="mc-btn" onclick="toggleFullscreen()" title="Helskärm">
-      ⛶
-    </button>
-  </div>
   
   <div class="clock-container">
     <div class="date" id="date">Laddar...</div>
@@ -236,6 +185,7 @@
       <span id="condition">☀️</span>
     </div>
     <div class="greeting" id="greeting">God dag!</div>
+    <noscript class="no-js">JavaScript krävs för klockan</noscript>
   </div>
   
   <div class="floating-blocks">
@@ -245,11 +195,12 @@
     <div class="block diamond">💎</div>
   </div>
 
+  <!-- INLINE JAVASCRIPT - funkar alltid -->
   <script>
-    // KLOCKA
     function updateClock() {
       const now = new Date();
       
+      // Tid
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
       const seconds = String(now.getSeconds()).padStart(2, '0');
@@ -257,6 +208,7 @@
       document.getElementById('time').textContent = hours + ':' + minutes;
       document.getElementById('seconds').textContent = seconds;
       
+      // Datum
       const days = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
       const dayName = days[now.getDay()];
       const date = String(now.getDate()).padStart(2, '0');
@@ -264,3 +216,49 @@
       
       document.getElementById('date').textContent = dayName + ' ' + date + '/' + month;
       
+      // Hälsning baserat på tid
+      const hour = now.getHours();
+      let greeting = 'God dag!';
+      if (hour < 6) greeting = 'God natt!';
+      else if (hour < 10) greeting = 'God morgon!';
+      else if (hour < 13) greeting = 'God förmiddag!';
+      else if (hour < 18) greeting = 'God eftermiddag!';
+      else greeting = 'God kväll!';
+      
+      document.getElementById('greeting').textContent = greeting;
+    }
+    
+    // Uppdatera direkt och varje sekund
+    updateClock();
+    setInterval(updateClock, 1000);
+    
+    // Hämta väder (valfritt - kräver API-nyckel)
+    // Om du vill ha väder, registrera dig på openweathermap.org
+    function getWeather() {
+      // Exempel: Stockholm
+      // Byt ut API-nyckel och koordinater
+      /*
+      fetch('https://api.openweathermap.org/data/2.5/weather?q=Stockholm,se&units=metric&appid=DIN_API_NYCKEL')
+        .then(r => r.json())
+        .then(data => {
+          document.getElementById('temp').textContent = Math.round(data.main.temp) + '°C';
+          // Emoji baserat på väder
+          const emoji = {
+            'Clear': '☀️',
+            'Clouds': '☁️',
+            'Rain': '🌧️',
+            'Snow': '❄️'
+          }[data.weather[0].main] || '🌤️';
+          document.getElementById('condition').textContent = emoji;
+        });
+      */
+    }
+    // getWeather(); // Avkommentera när du har API-nyckel
+    
+    // Förhindra skärmen från att stängas av (om möjligt)
+    if (navigator.wakeLock) {
+      navigator.wakeLock.request('screen').catch(e => console.log('Wake lock failed'));
+    }
+  </script>
+</body>
+</html>
