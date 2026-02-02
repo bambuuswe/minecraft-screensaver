@@ -4,40 +4,261 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Minecraft Clock</title>
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'VT323', monospace;
+      background: #0f0f23;
+      color: #fff;
+      overflow: hidden;
+      height: 100vh;
+      width: 100vw;
+      position: relative;
+    }
+
+    /* Bakgrund med stjärnor */
+    .stars {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        radial-gradient(2px 2px at 20px 30px, #ffffff, transparent),
+        radial-gradient(2px 2px at 40px 70px, #ffffff, transparent),
+        radial-gradient(2px 2px at 50px 160px, #ffffff, transparent),
+        radial-gradient(2px 2px at 90px 40px, #ffffff, transparent),
+        radial-gradient(2px 2px at 130px 80px, #ffffff, transparent),
+        radial-gradient(2px 2px at 160px 120px, #ffffff, transparent);
+      background-repeat: repeat;
+      background-size: 200px 200px;
+      animation: twinkle 3s infinite;
+    }
+
+    @keyframes twinkle {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    /* Huvudcontainer - ALLTID SYNLIG */
+    .clock-container {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      text-align: center;
+      z-index: 100;
+      width: 90%;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 40px;
+      border-radius: 20px;
+      border: 4px solid #5d8c3a;
+      box-shadow: 
+        0 0 20px rgba(93, 140, 58, 0.5),
+        inset 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .date {
+      font-size: 8vw;
+      color: #5d8c3a;
+      margin-bottom: 10px;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      text-shadow: 3px 3px 0 #000;
+      font-weight: bold;
+    }
+
+    .time {
+      font-size: 18vw;
+      color: #ffffff;
+      line-height: 1;
+      font-weight: bold;
+      letter-spacing: 8px;
+      text-shadow: 
+        4px 4px 0 #000,
+        0 0 20px rgba(255, 255, 255, 0.5);
+    }
+
+    .seconds {
+      font-size: 10vw;
+      color: #ffeb3b;
+      margin-top: 10px;
+      text-shadow: 3px 3px 0 #000;
+    }
+
+    .weather {
+      font-size: 6vw;
+      margin-top: 30px;
+      color: #87ceeb;
+      text-shadow: 2px 2px 0 #000;
+    }
+
+    .greeting {
+      font-size: 5vw;
+      margin-top: 30px;
+      color: #c8e6c9;
+      text-shadow: 2px 2px 0 #000;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.7; }
+      50% { opacity: 1; }
+    }
+
+    /* Flygande block */
+    .floating-blocks {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    .block {
+      position: absolute;
+      font-size: 50px;
+      opacity: 0.2;
+    }
+
+    .block.grass { 
+      top: 10%; 
+      animation: float1 20s infinite linear;
+    }
+    .block.dirt { 
+      top: 60%; 
+      animation: float2 25s infinite linear;
+    }
+    .block.stone { 
+      top: 30%; 
+      animation: float3 22s infinite linear;
+    }
+    .block.diamond { 
+      top: 80%; 
+      animation: float4 18s infinite linear;
+    }
+
+    @keyframes float1 {
+      from { transform: translateX(-100px) rotate(0deg); }
+      to { transform: translateX(calc(100vw + 100px)) rotate(360deg); }
+    }
+    @keyframes float2 {
+      from { transform: translateX(-100px) rotate(0deg); }
+      to { transform: translateX(calc(100vw + 100px)) rotate(-360deg); }
+    }
+    @keyframes float3 {
+      from { transform: translateX(-100px) rotate(0deg); }
+      to { transform: translateX(calc(100vw + 100px)) rotate(360deg); }
+    }
+    @keyframes float4 {
+      from { transform: translateX(-100px) rotate(0deg); }
+      to { transform: translateX(calc(100vw + 100px)) rotate(-360deg); }
+    }
+
+    /* Fallback om JS inte funkar */
+    .no-js {
+      color: #ff4444;
+      font-size: 5vw;
+      margin-top: 20px;
+    }
+  </style>
 </head>
 <body>
-  <div class="screensaver">
-    <!-- Bakgrund med stjärnor/block -->
-    <div class="stars"></div>
-    
-    <!-- Huvudinnehåll -->
-    <div class="clock-container">
-      <div class="date" id="date">--/--/----</div>
-      <div class="time" id="time">--:--</div>
-      <div class="seconds" id="seconds">--</div>
-      
-      <!-- Väder (valfritt - kräver API-nyckel) -->
-      <div class="weather" id="weather">
-        <span id="temp">--°C</span>
-        <span id="condition">☀️</span>
-      </div>
-      
-      <!-- Minecraft-hälsning -->
-      <div class="greeting" id="greeting">God dag!</div>
+  <div class="stars"></div>
+  
+  <div class="clock-container">
+    <div class="date" id="date">Laddar...</div>
+    <div class="time" id="time">--:--</div>
+    <div class="seconds" id="seconds">--</div>
+    <div class="weather" id="weather">
+      <span id="temp">--°C</span>
+      <span id="condition">☀️</span>
     </div>
-    
-    <!-- Flygande block (screensaver-effekt) -->
-    <div class="floating-blocks">
-      <div class="block grass">🟫</div>
-      <div class="block dirt">🟫</div>
-      <div class="block stone">⬜</div>
-      <div class="block diamond">💎</div>
-    </div>
+    <div class="greeting" id="greeting">God dag!</div>
+    <noscript class="no-js">JavaScript krävs för klockan</noscript>
   </div>
   
-  <script src="script.js"></script>
+  <div class="floating-blocks">
+    <div class="block grass">🟫</div>
+    <div class="block dirt">🟫</div>
+    <div class="block stone">⬜</div>
+    <div class="block diamond">💎</div>
+  </div>
+
+  <!-- INLINE JAVASCRIPT - funkar alltid -->
+  <script>
+    function updateClock() {
+      const now = new Date();
+      
+      // Tid
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      
+      document.getElementById('time').textContent = hours + ':' + minutes;
+      document.getElementById('seconds').textContent = seconds;
+      
+      // Datum
+      const days = ['Sön', 'Mån', 'Tis', 'Ons', 'Tor', 'Fre', 'Lör'];
+      const dayName = days[now.getDay()];
+      const date = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      
+      document.getElementById('date').textContent = dayName + ' ' + date + '/' + month;
+      
+      // Hälsning baserat på tid
+      const hour = now.getHours();
+      let greeting = 'God dag!';
+      if (hour < 6) greeting = 'God natt!';
+      else if (hour < 10) greeting = 'God morgon!';
+      else if (hour < 13) greeting = 'God förmiddag!';
+      else if (hour < 18) greeting = 'God eftermiddag!';
+      else greeting = 'God kväll!';
+      
+      document.getElementById('greeting').textContent = greeting;
+    }
+    
+    // Uppdatera direkt och varje sekund
+    updateClock();
+    setInterval(updateClock, 1000);
+    
+    // Hämta väder (valfritt - kräver API-nyckel)
+    // Om du vill ha väder, registrera dig på openweathermap.org
+    function getWeather() {
+      // Exempel: Stockholm
+      // Byt ut API-nyckel och koordinater
+      /*
+      fetch('https://api.openweathermap.org/data/2.5/weather?q=Stockholm,se&units=metric&appid=DIN_API_NYCKEL')
+        .then(r => r.json())
+        .then(data => {
+          document.getElementById('temp').textContent = Math.round(data.main.temp) + '°C';
+          // Emoji baserat på väder
+          const emoji = {
+            'Clear': '☀️',
+            'Clouds': '☁️',
+            'Rain': '🌧️',
+            'Snow': '❄️'
+          }[data.weather[0].main] || '🌤️';
+          document.getElementById('condition').textContent = emoji;
+        });
+      */
+    }
+    // getWeather(); // Avkommentera när du har API-nyckel
+    
+    // Förhindra skärmen från att stängas av (om möjligt)
+    if (navigator.wakeLock) {
+      navigator.wakeLock.request('screen').catch(e => console.log('Wake lock failed'));
+    }
+  </script>
 </body>
 </html>
