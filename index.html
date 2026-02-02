@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Minecraft Clock</title>
+  <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="screensaver">
+    <!-- Bakgrund med stjärnor/block -->
+    <div class="stars"></div>
+    
+    <!-- Huvudinnehåll -->
+    <div class="clock-container">
+      <div class="date" id="date">--/--/----</div>
+      <div class="time" id="time">--:--</div>
+      <div class="seconds" id="seconds">--</div>
+      
+      <!-- Väder (valfritt - kräver API-nyckel) -->
+      <div class="weather" id="weather">
+        <span id="temp">--°C</span>
+        <span id="condition">☀️</span>
+      </div>
+      
+      <!-- Minecraft-hälsning -->
+      <div class="greeting" id="greeting">God dag!</div>
+    </div>
+    
+    <!-- Flygande block (screensaver-effekt) -->
+    <div class="floating-blocks">
+      <div class="block grass">🟫</div>
+      <div class="block dirt">🟫</div>
+      <div class="block stone">⬜</div>
+      <div class="block diamond">💎</div>
+    </div>
+  </div>
+  
+  <script src="script.js"></script>
+</body>
+</html>
